@@ -5,7 +5,17 @@ const RelatedImages = ({ relatedImages }) => {
     <div>
       {relatedImages
         ? relatedImages.results.map((eImage, i) => {
-            return <img src={eImage.urls.regular} alt=""></img>;
+            return (
+              <img
+                style={{
+                  width: "300px",
+                  height: "300px",
+                  objectFit: "contain",
+                }}
+                src={eImage.urls.regular}
+                alt=""
+              ></img>
+            );
           })
         : ""}
     </div>
