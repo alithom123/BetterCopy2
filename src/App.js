@@ -8,6 +8,7 @@ function App() {
 
   // const [text, setText] = useState('')
   const [words, setWords] = useState([])
+  const [synonyms, setSynonyms] = useState()
 
   function handleWordButtonClicked(e) {
   }
@@ -51,12 +52,14 @@ function App() {
        */
 
 
-      if (typeof apiResult.data === "array" && typeof apiResult[0] !== 'object') {
+      if (typeof apiResult.data === "object" && typeof apiResult.data["0"] !== 'object') {
         // If in here then it didn't return results probably because it was not a word. "thi" will return "thin", "thaw", "thew", ...
         console.log(`the word entered did not return synonyms but only word suggestions`);
         // TODO: Offer these word suggestions up somewhere. Good for spellcheck or just get your brain to go somewhere.
         return false;
       } else {
+        // console.log(`typeof apiResult.data`, typeof apiResult.data);
+        // console.log(`typeof apiResult.data[0]`, typeof apiResult.data[0]);
         const standardizedResult = standardizeSynonyms(apiResult.data);
         console.log(`standardizedResult`, standardizedResult);
         return standardizedResult;
@@ -106,9 +109,15 @@ function App() {
   async function handleTextChange(e) {
     const text = e.target.value;
     console.log(`handleTextChange`, text);
-    const wordsArray = text.match(/\b(\w+)\b/g); //* This defines our words. Maybe just detect when this changes.
+    let wordsArray = text.match(/\b(\w+)\b/g); //* This defines our words. Maybe just detect when this changes.
     //* If number of words has change, redo the synonyms.
     //* Maybe easier to check if the last word has changed? sounds better.
+
+    //* previous statement returns null if no matches... should probably convert to empty array.
+    if (wordsArray === null) {
+      wordsArray = [];
+    }
+
     console.log(`new words length = ${wordsArray.length} old words = ${words.length}`);
     if (words.length !== wordsArray.length || words[words.length - 1] !== wordsArray[wordsArray.length - 1]) {
       console.log(`New word detected so going out to the api`);
@@ -116,7 +125,8 @@ function App() {
       const synonyms = await findSynonymsMerriamWebsterDictionaryApi(wordsArray[wordsArray.length - 1]); // returns false if not a word.
 
       if (synonyms) {
-        console.log(`i have new synonyms`, synonyms);
+        console.log(`i have new synonyms, performing setSynonyms with them`, synonyms);
+        setSynonyms(synonyms)
       } else {
         console.log(`no synonyms for this word`, synonyms);
       }
@@ -273,7 +283,10 @@ function App() {
           }
         </div>
         <div className="synonyms-section">
-          <Synonyms synonyms={{}}></Synonyms>
+          {synonyms ? (
+            <Synonyms synonyms={synonyms}></Synonyms>
+          ) : ""}
+
         </div>
       </header>
     </div>
