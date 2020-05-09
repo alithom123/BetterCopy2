@@ -1,3 +1,13 @@
+## Other Inspiring Things
+
+Lines of poetry with that word / lyrics
+quotes with that word
+rhymes
+etymology
+wiki
+google autosuggestions
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
