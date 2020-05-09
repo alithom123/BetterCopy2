@@ -3,15 +3,25 @@ import './App.css';
 import axios from 'axios';
 import WordButton from './components/WordButton'
 import Synonyms from './components/Synonyms'
+import RelatedImages from './components/RelatedImages'
+import Unsplash from 'unsplash-js';
+
+const unsplash = new Unsplash({ accessKey: process.env.REACT_APP_API_UNSPLASH_ACCESS_KEY });
 
 function App() {
 
   // const [text, setText] = useState('')
   const [words, setWords] = useState([])
   const [synonyms, setSynonyms] = useState()
+  const [relatedImages, setRelatedImages] = useState();
 
   function handleWordButtonClicked(e) {
   }
+
+  // function handleUnsplashClick(e) {
+  //   e.preventDefault();
+  //   getRelatedPhotos('test');
+  // }
 
   async function findSynonymsMerriamWebsterDictionaryApi(word) {
     console.log("Running findSynonymsMerriamWebsterDictionaryApi(" + word + ")");
@@ -130,6 +140,10 @@ function App() {
       } else {
         console.log(`no synonyms for this word`, synonyms);
       }
+
+      // Now handle images
+      getRelatedPhotos(wordsArray[wordsArray.length - 1]);
+
     }
   }
 
@@ -266,29 +280,65 @@ function App() {
 
   // }; // End of function populateSynonyms() {}
 
+  const getRelatedPhotos = (word) => {
+
+    //* Resource: https://unsplash.com/documentation#search-photos
+
+    // search.photos(keyword, page, per_page, filters)
+    // Get a list of photos matching the keyword.
+
+    //   Arguments
+
+    // Argument	Type	Opt / Required	Default
+    // keyword	string	Required
+    // page	number	Optional
+    // per_page	number	Optional	10
+    // filters	object	Optional
+    // filters.orientation	string	Optional
+    // filters.collections	array	Optional
+    // Example
+
+    unsplash.search.photos(word, 1, 10, { orientation: "portrait", per_page: 5, "page number": 1, })
+      // .then(toJson)
+      .then(res => res.json())
+      .then(json => {
+        // Your code
+        console.log(`here is the results from unsplash`, json);
+        setRelatedImages(json);
+      });
+
+  }
+
 
 
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Start typing!</h1>
-        <h2>We'll help inspire you!</h2>
-        <textarea onChange={handleTextChange}></textarea>
-        <div className="word-buttons-section">
-          {
-            words.map((word, i) =>
-              <WordButton key={i}>{word}</WordButton>
-            )
-          }
-        </div>
-        <div className="synonyms-section">
-          {synonyms ? (
-            <Synonyms synonyms={synonyms}></Synonyms>
-          ) : ""}
+      {/* <header className="App-header"> */}
+      <h1>Start typing!</h1>
+      <h2>We'll help inspire you!</h2>
+      <textarea onChange={handleTextChange}></textarea>
+      <div className="word-buttons-section">
+        {
+          words.map((word, i) =>
+            <WordButton key={i}>{word}</WordButton>
+          )
+        }
+      </div>
+      <div className="synonyms-section">
+        {synonyms ? (
+          <Synonyms synonyms={synonyms}></Synonyms>
+        ) : ""}
+      </div>
 
-        </div>
-      </header>
+      {/* <button onClick={handleUnsplashClick}>Get Related Images</button> */}
+
+      <div className="related-images-section">
+        <RelatedImages relatedImages={relatedImages}></RelatedImages>
+      </div>
+
+
+      {/* </header> */}
     </div>
   );
 }
