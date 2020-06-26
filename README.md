@@ -6,7 +6,13 @@ rhymes
 etymology
 wiki
 google autosuggestions
+use random searches on wiki / images / because getting your brain to go in different directions leads to surprising and exciting connections.
+news ( pop news and headline news )
 
+# TODO
+
+- If they are typing fast, cancel previous requests, or wait a tenth of a second to see if they type something else... if they don't then send the requests. That way when they are typing fast it only sends requests when they stop.
+- How do I render this as a grid using loops?
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
