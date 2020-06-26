@@ -1,20 +1,22 @@
-import React from "react";
+import React, {useState} from "react";
 
 function Synonyms({ synonyms }) {
+  const [tabSelected, setTabSelected] = useState(0);
+
   return (
-    <>
-      <div>
+    <>  
         <ul className="nav nav-tabs" id="synonymTabs" role="tablist">
           {synonyms.map((eachSynonym, i) => {
             return (
               <li className="nav-item" key={i}>
                 <a
-                  className="nav-link"
+                  className={`nav-link syn-meaning ${ tabSelected === i ? "active": ""}`}
                   id={i}
                   data-toggle="tab"
                   href={"#" + i}
                   role="tab"
                   aria-selected="false"
+                  onClick={() => setTabSelected(i)}
                 >
                   {eachSynonym.partOfSpeech + "; " + eachSynonym.synonyms[0]}
                 </a>
@@ -22,32 +24,26 @@ function Synonyms({ synonyms }) {
             );
           })}
         </ul>
+        
+        <div className="tab-content" id={"tabContent"} >
 
         {synonyms.map((eachSynonym, i) => {
           return (
-            <div className="tab-content" id={i + "tabContent"} key={i}>
               <div
-                className="tab-pane fade show active"
+                className={`tab-pane fade show ${tabSelected === i ? "active": ""}`}
                 id={i + "TabPane"}
                 role="tabpanel"
               >
-                <table
-                  className="table table-striped table-bordered table-hover table-sm"
-                  id={i + "Table"}
-                >
-                  <tbody id="0TableBody">
-                    <tr id="tr0">
-                      {eachSynonym.synonyms.map((eachSyn, i) => {
-                        return <td key={i}>{eachSyn}</td>;
+              
+                <div className='row synonyms'>
+                {eachSynonym.synonyms.map((eachSyn, i) => {
+                        return <div className='col-sm-2 each-synonym' key={i}>{eachSyn}</div>;
                       })}
-                    </tr>
-                  </tbody>
-                </table>
+                </div>
               </div>
-            </div>
           );
         })}
-      </div>
+        </div>
     </>
   );
 }

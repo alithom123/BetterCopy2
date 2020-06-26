@@ -19,22 +19,18 @@ function Wiki({ wiki }) {
   //   console.log(`the wiki im getting in Wiki component is`, wiki.query.pages);
   //   wiki.query.pages.forEach(logMapElements);
   return (
-    <div>
-      <div>
+    <>
         {Object.entries(wiki.query.pages).map(
           ([wikiPageNum, { extract, title }]) => (
             <div key={wikiPageNum}>
+              <h5>Wiki Title: <em>{title}</em></h5>
               <p>
-                <span>extract: {extract}</span>
-              </p>
-              <p>
-                <span>title: {title}</span>
+                <em>{extract}</em>
               </p>
             </div>
           )
         )}
-      </div>
-    </div>
+    </>
   );
 }
 

@@ -1,16 +1,84 @@
-.App {
+/* Redo this in bootstrap until you understand css better. Get a mentor */
+
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic");
+
+.bc-grid-container {
+  display: grid;
+  margin: 2rem;
+  /* Maybe the copy is in center surrounded by tiles that help you synonyms, wiki, etc. */
+  /* grid-template-columns: 3fr 2fr; maybe use an auto column to adapt to remaining space */
+  /* maybe use an auto column to adapt to remaining space */
+  grid-template-columns: 400px 400px;
+  /* grid-template-rows: 200px 200px 200px 200px 200px 200px 200px; */
+  /* grid-template-rows: 600px 600px 600px 600px 600px 600px 600px; */
+  grid-template-areas: 
+    "header header images"
+    "copy copy images "
+    "thesaurus thesaurus images"
+    "wiki wiki images"
+    "quotes quotes images"
+    "footer footer images";
+  grid-row-gap: 1rem;
+}
+
+.title {
+  font-family: "Source Sans Pro";
+  color: rgb(45, 190, 96);
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 0rem;
+}
+
+.tagline {
+  font-family: "Source Sans Pro", "sans-serif";
+  /* font-family: inherit; */
+  font-style: italic;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 0rem;
+  color: rgb(45, 190, 96);
+}
+
+
+.bc-header-area {
+  grid-area: header;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.bc-copy-area {
+  grid-area: copy;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.bc-thesaurus-area {
+  grid-area: thesaurus;
+}
+
+.bc-wiki-area {
+  grid-area: wiki;
+}
+
+.bc-images-area {
+  grid-area: images;
+  text-align: right;
+}
+
+.bc-quotes-area {
+  grid-area: quotes;
+  text-align: center;
+}
+
+.copy-input-textarea {
+  resize: none;
+  font-size: 1.25rem;
+}
+
+.copy-input-textarea:focus {
+  box-shadow: none;
+  border-color: rgb(45, 190, 96);
+}
+
+.App {
+  text-align: center;
 }
 
 .App-header {
@@ -28,11 +96,22 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.synonyms .each-synonym:hover {
+  background-color: rgba(0,0,0,.05);
+}
+
+.synonyms .each-synonym {
+  background-color: #fff;
+  /* CodeMentor ??? Why doesn't 1px solid look like it does on Github site. And why does half-pixel work? */
+  border: 0.5px solid #dee2e6;
+  padding: 2px;
+  text-align: center;
+}
+
+.syn-meaning.active, .syn-meaning:hover {
+  color: #2dbe60 !important;
+}
+
+.syn-meaning {
+  color: #495057;
 }

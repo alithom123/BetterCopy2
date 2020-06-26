@@ -1,24 +1,117 @@
 import React from "react";
 
 const RelatedImages = ({ relatedImages }) => {
+  // const renderImageGrid = () => {
+  //   for (let i = 0; i < 3; i++) {
+  //     return <p></p>;
+  //   }
+  // };
+
+  // var rows = [];
+  // for (var i = 0; i < 9; i++) {
+  //   // note: we add a key prop here to allow react to uniquely identify each
+  //   // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
+  //   rows.push(<div className="" key={i} />);
+  // }
+  // return <tbody>{rows}</tbody>;
+
+  //* https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
+  //* https://medium.com/sovtech-insights/how-to-generate-bootstrap-or-any-grids-dynamically-in-react-23df139199a8
+
   return (
-    <div>
-      {relatedImages
-        ? relatedImages.results.map((eImage, i) => {
-            return (
-              <img
-                style={{
-                  width: "300px",
-                  height: "300px",
-                  objectFit: "contain",
-                }}
-                src={eImage.urls.regular}
-                alt=""
-              ></img>
-            );
-          })
-        : ""}
-    </div>
+    <>
+      <div>
+        {relatedImages
+          ? relatedImages.results.map((eImage, i) => {
+              return (
+                <img
+                  style={{
+                    width: "300px",
+                    height: "300px",
+                    objectFit: "cover",
+                  }}
+                  src={eImage.urls.regular}
+                  alt=""
+                ></img>
+              );
+            })
+          : ""}
+      </div>
+
+      {/* TODO: How do I render this as a grid using loops? */}
+      {/* <div className="container">{renderImageGrid(relatedImages)}</div> */}
+      {/* Show images in a grid like ideo method cards https://www.amazon.com/IDEO-Method-Cards-Inspire-Design/dp/0954413210?utm_source=zapier.com&utm_medium=referral&utm_campaign=zapier */}
+
+{/*         <div className="row">
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[0].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[1].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[2].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[3].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[4].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[5].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[6].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[7].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+          <div className="col">
+            <img
+              alt=""
+              src={relatedImages.results[8].urls.regular}
+              style={{ width: "300px", height: "300px", objectFit: "cover" }}
+            ></img>
+          </div>
+        </div> */}
+    </>
   );
 };
 
