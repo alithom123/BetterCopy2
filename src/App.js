@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 import axios from 'axios';
-import WordButton from './components/WordButton'
+// import WordButton from './components/WordButton'
 import Synonyms from './components/Synonyms'
 import RelatedImages from './components/RelatedImages'
 import Wiki from './components/Wiki'
 import Quotes from './components/Quotes'
 import Unsplash from 'unsplash-js';
+import ExpandingCopyArea from './components/ExpandingCopyArea'
+import WordSuggestions from './components/WordSuggestions'
 
 const unsplash = new Unsplash({ accessKey: process.env.REACT_APP_API_UNSPLASH_ACCESS_KEY });
 
@@ -15,6 +17,7 @@ function App() {
   // const [text, setText] = useState('')
   const [words, setWords] = useState([])
   const [synonyms, setSynonyms] = useState()
+  const [wordSuggestions, setWordSuggestions] = useState()
   const [relatedImages, setRelatedImages] = useState();
   const [wiki, setWiki] = useState(false);
   const [quotes, setQuotes] = useState(false);
@@ -45,14 +48,25 @@ function App() {
     const synonymsOn = true;
     if (synonymsOn) {
       console.log(`New word detected so going out to the api`);
-      const synonyms = await findSynonymsMerriamWebsterDictionaryApi(word); // returns false if not a word.
+      const result = await findSynonymsMerriamWebsterDictionaryApi(word); // returns false if not a word.
+      console.log(`standardized result from api call`, result);
+      // let synonyms, wordSuggestions;
 
-      if (synonyms) {
-        console.log(`i have new synonyms, performing setSynonyms with them`, synonyms);
-        setSynonyms(synonyms)
-      } else {
-        setSynonyms(false);
-        console.log(`no synonyms for this word`, synonyms);
+      if(result === false ) {
+        // If no synonyms or word suggestions were found.
+        console.log(`clearing synonyms and wordSuggestions`);
+        setSynonyms();
+        setWordSuggestions();
+        return;
+      }
+
+      if(result.type === 'synonyms') {
+        console.log(`i have new synonyms, performing setSynonyms with them`, result.synonyms);
+        setSynonyms(result.synonyms);
+      } 
+      else if(result.type === 'word_suggestions') {
+        console.log(`no synonyms for this word only word suggestions`, result.word_suggestions);
+        setWordSuggestions(result.word_suggestions);
       }
     }
 
@@ -62,19 +76,24 @@ function App() {
     console.log("Running findSynonymsMerriamWebsterDictionaryApi(" + word + ")");
 
     // let apiCollegiateKey = "329cd6bf-de15-4cdb-803d-4cf1e77c5091"; // TODO: Hide this.
-    console.log(`process.env`, process.env);
+    // console.log(`process.env`, process.env);
     const apiCollegiateKey = process.env.REACT_APP_API_COLLEGIATE_KEY;
-    console.log(`api key`, apiCollegiateKey);
     let apiCollegiateBaseUrl = "https://www.dictionaryapi.com/api/v3/references/thesaurus/json/{word}?key={api-key}";
     var apiUrl = apiCollegiateBaseUrl.replace("{word}", word).replace("{api-key}", apiCollegiateKey);
-    console.log("Here is the apiUrl: " + apiUrl);
+    // console.log("Here is the apiUrl: " + apiUrl);
 
-    console.log("url =" + apiUrl);
+    // console.log("url =" + apiUrl);
 
     try {
       const apiResult = await axios.get(apiUrl);
       console.log(`apiResult.data`, apiResult.data);
-      /* 
+      if (apiResult.data === "Word is required." || (typeof apiResult.data === "object" && apiResult.data.length === 0)) {
+        console.log(`webster api said "Word is required"  I think this means I sent a single letter OR returned empty array`);
+        return false;
+      } else {
+
+        if (false) {
+          /* 
       /** Let's check if you actually got synonmys. If it's not a real word, it will just give you an array of close words match.
    
       When I search for "thi" the result set is a plain array where the elemtns are just strings and not objects.
@@ -95,19 +114,28 @@ function App() {
        3: { meta: { … }, hwi: { … }, fl: "adjective", def: Array(1), shortdef: Array(1) }
        4: { meta: { … }, hwi: { … }, fl: "verb", def: Array(1), shortdef: Array(3) }
        */
+        }
 
 
-      if (typeof apiResult.data === "object" && typeof apiResult.data["0"] !== 'object') {
-        // If in here then it didn't return results probably because it was not a word. "thi" will return "thin", "thaw", "thew", ...
-        console.log(`the word entered did not return synonyms but only word suggestions`);
-        // TODO: Offer these word suggestions up somewhere. Good for spellcheck or just get your brain to go somewhere.
-        return false;
-      } else {
-        // console.log(`typeof apiResult.data`, typeof apiResult.data);
-        // console.log(`typeof apiResult.data[0]`, typeof apiResult.data[0]);
-        const standardizedResult = standardizeSynonyms(apiResult.data);
-        console.log(`standardizedResult`, standardizedResult);
-        return standardizedResult;
+
+        if (typeof apiResult.data === "object" && typeof apiResult.data["0"] !== 'object') {
+          // If in here then it didn't return results probably because it was not a word. "thi" will return "thin", "thaw", "thew", ...
+          console.log(`webster api the word entered did not return synonyms but only word suggestions`);
+          // TODO: Offer these word suggestions up somewhere. Good for spellcheck or just get your brain to go somewhere.
+          // apiResult.data = ["fie", "fib", "fit", "fig", "fish", "fin", "fist", "fix", "fizz", "fail", "fain", "fair", "fiat", "fibs", "fief", "figs", "file", "fill", "film", "find"]
+          return {  type: 'word_suggestions',
+                    word_suggestions: apiResult.data
+                  };
+        } else {
+          console.log(`webster api fetched synonyms successfully`);
+          // console.log(`typeof apiResult.data`, typeof apiResult.data);
+          // console.log(`typeof apiResult.data[0]`, typeof apiResult.data[0]);
+          const standardizedResult = standardizeSynonyms(apiResult.data);
+          console.log(`standardizedResult`, standardizedResult);
+          return { type: 'synonyms',
+                   synonyms: standardizedResult
+                  };
+        }
       }
     } catch (error) {
       console.error(error);
@@ -152,8 +180,11 @@ function App() {
 
 
   async function handleTextChange(e) {
+
     const text = e.target.value;
     console.log(`handleTextChange`, text);
+    // console.log(`caret`, document.caretPositionFromPoint);
+    // console.log(`caret range`, document.caretRangeFromPoint);
     let wordsArray = text.match(/\b(\w+)\b/g); //* This defines our words. Maybe just detect when this changes.
     //* If number of words has change, redo the synonyms.
     //* Maybe easier to check if the last word has changed? sounds better.
@@ -167,13 +198,19 @@ function App() {
 
     console.log(`new words length = ${wordsArray.length} old words = ${words.length}`);
     let currentWord = undefined;
-    if (words.length !== wordsArray.length || words[words.length - 1] !== wordsArray[wordsArray.length - 1]) {
-      currentWord = wordsArray[wordsArray.length - 1];
-      console.log(`New word detected so going out to the api`);
+    // if (words.length !== wordsArray.length || words[words.length - 1] !== wordsArray[wordsArray.length - 1]) {
+    //   currentWord = wordsArray[wordsArray.length - 1];
+    //   console.log(`New word detected so going out to the api`);
 
 
+    let cursorPosition = getCursorPos(e.target).end;
+    console.log(`cursorPosition`, cursorPosition);
+    let precedingWord = getWordPrecedingCursor(text, cursorPosition);
+    console.log(`precedingWord`, precedingWord);
+
+    if (precedingWord) {
       // Now handle synonyms
-      getSynonyms(currentWord)
+      getSynonyms(precedingWord)
 
       // const synonyms = await findSynonymsMerriamWebsterDictionaryApi(currentWord); // returns false if not a word.
 
@@ -186,17 +223,64 @@ function App() {
       // }
 
       // Now handle images
-      getRelatedPhotos(currentWord);
+      getRelatedPhotos(precedingWord);
 
       // Now handle wiki(wordsArray[wordsArray.length - 1])
-      getWiki(currentWord);
+      getWiki(precedingWord);
 
       // Now handle quotes
-      getQuotes(currentWord);
+      getQuotes(precedingWord);
+    } else {
+      console.log(`no word to search for`);
+    }
 
+    // }
+  }
+
+  function getWordPrecedingCursor(text, caretPos) {
+    console.log(`running getWordPrecedingCursor position = ${caretPos}`, text);
+    // https://stackoverflow.com/questions/9959690/javascript-get-word-before-cursor
+    var index = text.indexOf(caretPos);
+    var preText = text.substring(0, caretPos);
+    if (preText.indexOf(" ") > 0) {
+      var words = preText.split(" ");
+      return words[words.length - 1]; //return last word
+    }
+    else {
+      return preText;
     }
   }
 
+  //   function ReturnWord(text, caretPos) {
+  // }
+
+
+  // http://jsfiddle.net/gilly3/6SUN8/
+  function getCursorPos(input) {
+    if ("selectionStart" in input && document.activeElement == input) {
+      return {
+        start: input.selectionStart,
+        end: input.selectionEnd
+      };
+    }
+    else if (input.createTextRange) {
+      var sel = document.selection.createRange();
+      if (sel.parentElement() === input) {
+        var rng = input.createTextRange();
+        rng.moveToBookmark(sel.getBookmark());
+        for (var len = 0; rng.compareEndPoints("EndToStart", rng) > 0; rng.moveEnd("character", -1)) {
+          len++;
+        }
+        rng.setEndPoint("StartToStart", input.createTextRange());
+        for (var pos = { start: 0, end: len }; rng.compareEndPoints("EndToStart", rng) > 0; rng.moveEnd("character", -1)) {
+          pos.start++;
+          pos.end++;
+        }
+        return pos;
+      }
+    }
+    return -1;
+  }
 
   // TODO: Somehow detect if they just finished a word. If they did, update it with the synonyms.
   //* If last character is a space. Simplest way to do it at this point. Maybe also consider period and comma and apostrophe and semicolon.
@@ -263,7 +347,7 @@ function App() {
   const getQuotes = (word) => {
     console.log(`word`, word);
 
-    const quotesOn = true;
+    const quotesOn = false;
     if (quotesOn) {
       // axios.get(`https://api.paperquotes.com/apiv1/quotes/?tags=love,life&curated=1`)
       // axios.get(`https://api.paperquotes.com/apiv1/quotes/?tags=love,life&curated=1`)
@@ -323,9 +407,10 @@ function App() {
         {/* Copy area for writing */}
         <div className="bc-copy-area">
           <>
-          <div class="form-group">
-            <textarea className="copy-input-textarea form-control" onChange={handleTextChange} defaultValue="Type or paste (⌘+V) your text here."></textarea>
-          </div>
+            <div className="form-group">
+              {/* <textarea className="copy-input-textarea form-control" onChange={handleTextChange} defaultValue="Type or paste (⌘+V) your text here."></textarea> */}
+              <ExpandingCopyArea classes="copy-input-textarea form-control" placeholder="Type or paste (⌘+V) your text here." onChange={handleTextChange} />
+            </div>
           </>
         </div>
 
@@ -341,14 +426,20 @@ function App() {
             }
           </div>
            */}
-        
+
           <div className="synonyms-section">
             {synonyms ? (
               <Synonyms synonyms={synonyms}></Synonyms>
             ) : ""}
           </div>
+
+          <div className="word-suggestions-section">
+            {wordSuggestions ? (
+              <WordSuggestions wordSuggestions={wordSuggestions} />
+            ) : ""}
+          </div>
         </div>
-  
+
         {/* Wiki area */}
         <div className="bc-wiki-area">
           {/* <button onClick={handleWikiClick}>Get Wiki Info</button> */}
@@ -380,3 +471,21 @@ function App() {
 }
 
 export default App;
+
+/*
+function growTextarea (i,elem) {
+	var elem = $(elem);
+	var resizeTextarea = function( elem ) {
+    	var scrollLeft = window.pageXOffset || (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+    	var scrollTop  = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    	elem.css('height', 'auto').css('height', elem.prop('scrollHeight') );
+      	window.scrollTo(scrollLeft, scrollTop);
+  	};
+  	elem.on('input', function() {
+    	resizeTextarea( $(this) );
+  	});
+  	resizeTextarea( $(elem) );
+}
+
+$('.jTextarea').each(growTextarea);
+ */

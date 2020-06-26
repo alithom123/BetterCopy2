@@ -32,6 +32,7 @@ const RelatedImages = ({ relatedImages }) => {
                   }}
                   src={eImage.urls.regular}
                   alt=""
+                  key={i}
                 ></img>
               );
             })
