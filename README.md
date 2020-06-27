@@ -1,3 +1,12 @@
+# BetterCopy App
+A tool to help inspire writers & copywriters! Every word you type is instantly looked in the thesaurus to inspire your word-choice. Images & quotes relating to the word also pop-up to inspire your imagination! 
+
+## Deployment
+I recently (06/27/2020) deployed the app using Netlify. 
+
+## Tech
+I used React, some bootstrap, some custom css, and various apis including unsplash and wiki.
+
 ## Other Inspiring Things
 
 Lines of poetry with that word / lyrics
