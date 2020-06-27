@@ -24,7 +24,7 @@ tags: Array(9)
 8: "mission" 
 */
 
-function Quotes({ quotes }) {
+function Quotes({ quotes, currentWord }) {
   return (
     <>
       <h4 className='green-color'>Quotes</h4>

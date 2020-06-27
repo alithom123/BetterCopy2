@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 
-function Synonyms({ synonyms }) {
+function Synonyms({ synonyms, currentWord }) {
   const [tabSelected, setTabSelected] = useState(0);
 
   return (
     <>  
+        <h5 className="section-title">Try another word for {currentWord}!</h5>
         <ul className="nav nav-tabs" id="synonymTabs" role="tablist">
           {synonyms.map((eachSynonym, i) => {
             return (
@@ -13,7 +14,7 @@ function Synonyms({ synonyms }) {
                   className={`nav-link syn-meaning ${ tabSelected === i ? "active": ""}`}
                   id={i}
                   data-toggle="tab"
-                  href={"#" + i}
+                  // href={"#" + i}
                   role="tab"
                   aria-selected="false"
                   onClick={() => setTabSelected(i)}
@@ -33,6 +34,7 @@ function Synonyms({ synonyms }) {
                 className={`tab-pane fade show ${tabSelected === i ? "active": ""}`}
                 id={i + "TabPane"}
                 role="tabpanel"
+                key={i}
               >
               
                 <div className='row synonyms'>

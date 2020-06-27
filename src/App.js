@@ -16,6 +16,7 @@ function App() {
 
   // const [text, setText] = useState('')
   const [words, setWords] = useState([])
+  const [currentWord, setCurrentWord] = useState();
   const [synonyms, setSynonyms] = useState()
   const [wordSuggestions, setWordSuggestions] = useState()
   const [relatedImages, setRelatedImages] = useState();
@@ -47,7 +48,7 @@ function App() {
 
     const synonymsOn = true;
     if (synonymsOn) {
-      console.log(`New word detected so going out to the api`);
+      console.log(`New word detected so going out to the api for word = `, word);
       const result = await findSynonymsMerriamWebsterDictionaryApi(word); // returns false if not a word.
       console.log(`standardized result from api call`, result);
       // let synonyms, wordSuggestions;
@@ -63,10 +64,12 @@ function App() {
       if(result.type === 'synonyms') {
         console.log(`i have new synonyms, performing setSynonyms with them`, result.synonyms);
         setSynonyms(result.synonyms);
+        setWordSuggestions();
       } 
       else if(result.type === 'word_suggestions') {
         console.log(`no synonyms for this word only word suggestions`, result.word_suggestions);
         setWordSuggestions(result.word_suggestions);
+        setSynonyms();
       }
     }
 
@@ -206,6 +209,7 @@ function App() {
     let cursorPosition = getCursorPos(e.target).end;
     console.log(`cursorPosition`, cursorPosition);
     let precedingWord = getWordPrecedingCursor(text, cursorPosition);
+    setCurrentWord(precedingWord);
     console.log(`precedingWord`, precedingWord);
 
     if (precedingWord) {
@@ -310,15 +314,23 @@ function App() {
     // filters.collections	array	Optional
     // Example
 
-    const unsplashOn = true;
+    let unsplashOn = true;
     if (unsplashOn) {
       unsplash.search.photos(word, 1, 9, { orientation: "portrait" })
         // .then(toJson)
-        .then(res => res.json())
+        .then(res => {
+          console.log(`raw response from unsplash`, res);
+          if(res.status ===403) { // This probably means you got exceeded limit.
+            unsplashOn = false; // Turn the api off for this session.
+          }
+          return res.json();
+          })
         .then(json => {
           // Your code
           console.log(`here is the results from unsplash`, json);
           setRelatedImages(json);
+        }).catch(err => {
+          console.log(`error on unsplash api`, err);
         });
 
     }
@@ -335,8 +347,15 @@ function App() {
       axios.get(`https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&format=json&titles=${word}`)
 
         .then((res) => {
-          console.log(`res`, res);
-          setWiki(res.data);
+          console.log(`wiki res`, res);
+          // standardize the wiki by trying to remove crappy wikis with little content
+          // let wikiFilteredArray = Object.entries(res.data.query.pages).filter(([wikiPageNum, { extract, title, pageid }]) => {
+          //   return extract.length > 50;
+          // });
+          let wikiFilteredArray = Object.values(res.data.query.pages); // Convert object of object to array of objects.
+          wikiFilteredArray = wikiFilteredArray.filter( eWiki => { return eWiki.extract.length > 50 }); // Only show wiki if it's longer than 50 characters. There's some empty ones.
+          console.log(`wikiFilteredArray`, wikiFilteredArray);
+          setWiki(wikiFilteredArray);
         })
         .catch(err => {
           console.error(err)
@@ -393,7 +412,7 @@ function App() {
     <div className="App">
 
       {/* Grid container set by this div and classname bc-grid-container */}
-      <div className="container bc-grid-container">
+      <div className="bc-grid-container"> 
 
         {/* Header area */}
         <div className="bc-header-area">
@@ -429,13 +448,13 @@ function App() {
 
           <div className="synonyms-section">
             {synonyms ? (
-              <Synonyms synonyms={synonyms}></Synonyms>
+              <Synonyms synonyms={synonyms} currentWord={currentWord} />
             ) : ""}
           </div>
 
           <div className="word-suggestions-section">
             {wordSuggestions ? (
-              <WordSuggestions wordSuggestions={wordSuggestions} />
+              <WordSuggestions wordSuggestions={wordSuggestions} currentWord={currentWord} />
             ) : ""}
           </div>
         </div>
@@ -444,14 +463,14 @@ function App() {
         <div className="bc-wiki-area">
           {/* <button onClick={handleWikiClick}>Get Wiki Info</button> */}
           <div className="wiki-section">
-            {wiki ? (<Wiki wiki={wiki}></Wiki>) : ""}
-          </div>
+            {wiki ? (<Wiki wiki={wiki} currentWord={currentWord} />) : ""}
+          </div> 
         </div>
 
         {/* Quotes area */}
         <div className="bc-quotes-area">
           <div className="quotes-section">
-            {quotes ? (<Quotes quotes={quotes}></Quotes>) : ""}
+            {quotes ? (<Quotes quotes={quotes} currentWord={currentWord} />) : ""}
           </div>
         </div>
 
@@ -459,7 +478,7 @@ function App() {
         <div className="bc-images-area">
           {/* <button onClick={handleUnsplashClick}>Get Related Images</button> */}
           <div className="related-images-section">
-            {relatedImages ? <RelatedImages relatedImages={relatedImages} /> : ""}
+            {relatedImages ? <RelatedImages relatedImages={relatedImages} currentWord={currentWord}/> : ""}
           </div>
         </div>
 

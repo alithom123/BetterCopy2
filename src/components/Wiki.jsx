@@ -11,7 +11,7 @@ pageid: 736
 title: "Albert Einstein"
 */
 
-function Wiki({ wiki }) {
+function Wiki({ wiki, currentWord }) {
   //   function logMapElements(value, key, map) {
   //     console.log(`m[${key}] = ${value}`);
   //   }
@@ -20,16 +20,12 @@ function Wiki({ wiki }) {
   //   wiki.query.pages.forEach(logMapElements);
   return (
     <>
-        {Object.entries(wiki.query.pages).map(
-          ([wikiPageNum, { extract, title }]) => (
-            <div key={wikiPageNum}>
-              <h5>Wiki Title: <em>{title}</em></h5>
-              <p>
-                <em>{extract}</em>
-              </p>
-            </div>
-          )
-        )}
+        <h5 className="section-title">Take a lookie at the wiki </h5>
+        {wiki.map(({ extract, title, pageid }) => (
+                <div key={pageid}>
+                  <p style={{ textAlign: "justify"}}>{extract}</p>
+                </div>
+        ))}
     </>
   );
 }

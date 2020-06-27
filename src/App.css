@@ -4,22 +4,44 @@
 
 .bc-grid-container {
   display: grid;
-  margin: 2rem;
   /* Maybe the copy is in center surrounded by tiles that help you synonyms, wiki, etc. */
   /* grid-template-columns: 3fr 2fr; maybe use an auto column to adapt to remaining space */
   /* maybe use an auto column to adapt to remaining space */
-  grid-template-columns: 400px 400px;
+  grid-template-columns: 1fr 1fr 1fr;
   /* grid-template-rows: 200px 200px 200px 200px 200px 200px 200px; */
   /* grid-template-rows: 600px 600px 600px 600px 600px 600px 600px; */
   grid-template-areas: 
     "header header images"
     "copy copy images "
     "thesaurus thesaurus images"
-    "word_suggestions word_suggestions images"
     "wiki wiki images"
     "quotes quotes images"
     "footer footer images";
-  grid-row-gap: 1rem;
+  grid-row-gap: 3rem;
+  /* margin-left: 2rem;
+  margin-right: 2rem; */
+  /* grid-column-gap: 1rem; */
+}
+
+@media (max-width: 50rem) {
+  .bc-grid-container {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+      "header header"
+      "copy copy"
+      "thesaurus thesaurus"
+      "images images"
+      "wiki wiki"
+      "quotes quotes"
+      "footer footer";
+      margin-left: 1rem;
+      margin-right: 1rem;
+  } 
+}
+
+.section-title {
+  text-decoration: underline;
+  text-decoration-color: #2dbe60;
 }
 
 .title {
@@ -44,18 +66,27 @@
 .bc-header-area {
   grid-area: header;
   text-align: center;
+  margin-top: 2rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .bc-copy-area {
   grid-area: copy;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .bc-thesaurus-area {
   grid-area: thesaurus;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .bc-wiki-area {
   grid-area: wiki;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .bc-images-area {
@@ -66,6 +97,8 @@
 .bc-quotes-area {
   grid-area: quotes;
   text-align: center;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .copy-input-textarea {

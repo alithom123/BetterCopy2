@@ -1,6 +1,6 @@
 import React from "react";
 
-const RelatedImages = ({ relatedImages }) => {
+const RelatedImages = ({ relatedImages, currentWord }) => {
   // const renderImageGrid = () => {
   //   for (let i = 0; i < 3; i++) {
   //     return <p></p>;
@@ -26,8 +26,9 @@ const RelatedImages = ({ relatedImages }) => {
               return (
                 <img
                   style={{
-                    width: "300px",
-                    height: "300px",
+                    width: "100%",
+                    // height: "20rem",
+                    height: "34vh",
                     objectFit: "cover",
                   }}
                   src={eImage.urls.regular}
