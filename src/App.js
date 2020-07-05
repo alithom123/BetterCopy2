@@ -330,7 +330,7 @@ function App() {
 
     let unsplashOn = true;
     if (unsplashOn) {
-      unsplash.search.photos(word, 1, 2, { orientation: "portrait" })
+      unsplash.search.photos(word, 1, 3, { orientation: "portrait" })
         // .then(toJson)
         .then(res => {
           console.log(`raw response from unsplash`, res);
