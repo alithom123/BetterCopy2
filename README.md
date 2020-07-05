@@ -3,8 +3,6 @@ A tool to help inspire writers & copywriters! Every word you type is instantly l
 
 Find the app at: https://bettercopy.netlify.app/
 
-
-
 ## Deployment
 I recently (06/27/2020) deployed the app using Netlify. 
 

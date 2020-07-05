@@ -27,15 +27,26 @@ tags: Array(9)
 function Quotes({ quotes, currentWord }) {
   return (
     <>
-      <h4 className='green-color'>Quotes</h4>
+      { quotes.results.length ? (
+        <h5 className='section-title'>Quotes on {currentWord}!</h5>
+      ):(
+        <h5 className='section-title'>Sorry! No quotes found for {currentWord}</h5>
+      )}
+      
       <div>
         {/* If you want to see the full data uncomment the line below. */}
         {/* <p>{JSON.stringify(quotes)}</p> */}
+        { quotes.length === 0 ? (
+          <p>No quotes found for {currentWord}</p>
+          ) : null
+        }
         {quotes.results.map((eachQuote, i) => {
           return (
             <div className="quote-list-div" key={i}>
-              <p className="blockquote">{eachQuote.quote}</p>
-              <p className="blockquote-footer"><cite>{eachQuote.author}</cite></p>
+              {/* <p className="blockquote">{eachQuote.quote}</p> */}
+              <p style={{ marginBottom: "0rem"}}>{eachQuote.quote}</p>
+              {/* <p className="blockquote-footer"><cite>{eachQuote.author}</cite></p> */}
+              <p className="quote-author">- {eachQuote.author}</p>
             </div>
           );
         })}

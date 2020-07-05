@@ -242,17 +242,31 @@ function App() {
   }
 
   function getWordPrecedingCursor(text, caretPos) {
-    console.log(`running getWordPrecedingCursor position = ${caretPos}`, text);
+    console.log(`getWordPrecedingCursor running caretPos = ${caretPos} and text = `, text);
     // https://stackoverflow.com/questions/9959690/javascript-get-word-before-cursor
     var index = text.indexOf(caretPos);
     var preText = text.substring(0, caretPos);
-    if (preText.indexOf(" ") > 0) {
-      var words = preText.split(" ");
-      return words[words.length - 1]; //return last word
+    let wordsArray = preText.match(/\b(\w+)\b/g);
+    console.log(`getWordPrecedingCursor wordsArray =`, wordsArray);
+
+    // console.log(`getWordPrecedingCursor preText`, preText);
+    // console.log(`getWordPrecedingCursor preText indexOf_ = `, preText.indexOf(" "));
+
+    if(wordsArray && wordsArray.length > 0) {
+      return wordsArray[wordsArray.length - 1];
+    } else { 
+      return null;
     }
-    else {
-      return preText;
-    }
+
+
+    // if (preText.indexOf(" ") > 0) {
+    //   var words = preText.split(" ");
+    //   console.log(`getWordPrecedingCursor words = `, words);
+    //   return words[words.length - 1]; //return last word
+    // }
+    // else {
+    //   return preText;
+    // }
   }
 
   //   function ReturnWord(text, caretPos) {
@@ -316,7 +330,7 @@ function App() {
 
     let unsplashOn = true;
     if (unsplashOn) {
-      unsplash.search.photos(word, 1, 9, { orientation: "portrait" })
+      unsplash.search.photos(word, 1, 2, { orientation: "portrait" })
         // .then(toJson)
         .then(res => {
           console.log(`raw response from unsplash`, res);
@@ -366,7 +380,7 @@ function App() {
   const getQuotes = (word) => {
     console.log(`word`, word);
 
-    const quotesOn = false;
+    const quotesOn = true;
     if (quotesOn) {
       // axios.get(`https://api.paperquotes.com/apiv1/quotes/?tags=love,life&curated=1`)
       // axios.get(`https://api.paperquotes.com/apiv1/quotes/?tags=love,life&curated=1`)
@@ -459,19 +473,20 @@ function App() {
           </div>
         </div>
 
-        {/* Wiki area */}
-        <div className="bc-wiki-area">
-          {/* <button onClick={handleWikiClick}>Get Wiki Info</button> */}
-          <div className="wiki-section">
-            {wiki ? (<Wiki wiki={wiki} currentWord={currentWord} />) : ""}
-          </div> 
-        </div>
 
         {/* Quotes area */}
         <div className="bc-quotes-area">
           <div className="quotes-section">
             {quotes ? (<Quotes quotes={quotes} currentWord={currentWord} />) : ""}
           </div>
+        </div>
+
+        {/* Wiki area */}
+        <div className="bc-wiki-area">
+          {/* <button onClick={handleWikiClick}>Get Wiki Info</button> */}
+          <div className="wiki-section">
+            {wiki ? (<Wiki wiki={wiki} currentWord={currentWord} />) : ""}
+          </div> 
         </div>
 
         {/* Images area */}

@@ -14,8 +14,8 @@
     "header header images"
     "copy copy images "
     "thesaurus thesaurus images"
-    "wiki wiki images"
     "quotes quotes images"
+    "wiki wiki images"
     "footer footer images";
   grid-row-gap: 3rem;
   /* margin-left: 2rem;
@@ -110,6 +110,17 @@
   box-shadow: none;
   border-color: rgb(45, 190, 96);
 }
+
+.quote-author {
+  /* display: block; */
+  font-style: italic;
+  font-size: 80%;
+  /* color: #6c757d; font-style: italic; grid-area: quotes; 
+text-align: center;
+margin-left: 2rem;
+margin-right: 2rem; */
+}
+
 
 .App {
   text-align: center;

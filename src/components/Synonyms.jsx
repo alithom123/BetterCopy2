@@ -39,7 +39,7 @@ function Synonyms({ synonyms, currentWord }) {
               
                 <div className='row synonyms'>
                 {eachSynonym.synonyms.map((eachSyn, i) => {
-                        return <div className='col-sm-2 each-synonym' key={i}>{eachSyn}</div>;
+                        return <div className='col-sm-3 each-synonym' key={i}>{eachSyn}</div>;
                       })}
                 </div>
               </div>

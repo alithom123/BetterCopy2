@@ -20,7 +20,7 @@ function Wiki({ wiki, currentWord }) {
   //   wiki.query.pages.forEach(logMapElements);
   return (
     <>
-        <h5 className="section-title">Take a lookie at the wiki </h5>
+        <h5 className="section-title">Lookie lookie at the wiki for {currentWord}!</h5>
         {wiki.map(({ extract, title, pageid }) => (
                 <div key={pageid}>
                   <p style={{ textAlign: "justify"}}>{extract}</p>
