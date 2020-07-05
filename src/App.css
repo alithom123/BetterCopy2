@@ -7,16 +7,16 @@
   /* Maybe the copy is in center surrounded by tiles that help you synonyms, wiki, etc. */
   /* grid-template-columns: 3fr 2fr; maybe use an auto column to adapt to remaining space */
   /* maybe use an auto column to adapt to remaining space */
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   /* grid-template-rows: 200px 200px 200px 200px 200px 200px 200px; */
   /* grid-template-rows: 600px 600px 600px 600px 600px 600px 600px; */
   grid-template-areas: 
-    "header header images"
-    "copy copy images "
-    "thesaurus thesaurus images"
-    "quotes quotes images"
-    "wiki wiki images"
-    "footer footer images";
+    "header header images giphys"
+    "copy copy images giphys"
+    "thesaurus thesaurus images giphys"
+    "quotes quotes images giphys"
+    "wiki wiki images giphys"
+    "footer footer images giphys";
   grid-row-gap: 3rem;
   /* margin-left: 2rem;
   margin-right: 2rem; */
@@ -31,6 +31,7 @@
       "copy copy"
       "thesaurus thesaurus"
       "images images"
+      "giphys giphys"
       "wiki wiki"
       "quotes quotes"
       "footer footer";
@@ -91,6 +92,11 @@
 
 .bc-images-area {
   grid-area: images;
+  text-align: right;
+}
+
+.bc-giphys-area {
+  grid-area: giphys;
   text-align: right;
 }
 

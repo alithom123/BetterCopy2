@@ -4,13 +4,18 @@ import axios from 'axios';
 // import WordButton from './components/WordButton'
 import Synonyms from './components/Synonyms'
 import RelatedImages from './components/RelatedImages'
+import Giphys from './components/Giphys'
 import Wiki from './components/Wiki'
 import Quotes from './components/Quotes'
 import Unsplash from 'unsplash-js';
+import { GiphyFetch } from '@giphy/js-fetch-api'
 import ExpandingCopyArea from './components/ExpandingCopyArea'
 import WordSuggestions from './components/WordSuggestions'
 
 const unsplash = new Unsplash({ accessKey: process.env.REACT_APP_API_UNSPLASH_ACCESS_KEY });
+console.log(`giphy api key`, process.env.REACT_APP_API_GIPHY_ACCESS_KEY);
+console.log(`unsplash api key`, process.env.REACT_APP_API_UNSPLASH_ACCESS_KEY);
+const gf = new GiphyFetch(process.env.REACT_APP_API_GIPHY_ACCESS_KEY);
 
 function App() {
 
@@ -22,6 +27,7 @@ function App() {
   const [relatedImages, setRelatedImages] = useState();
   const [wiki, setWiki] = useState(false);
   const [quotes, setQuotes] = useState(false);
+  const [giphys, setGiphys] = useState(false);
 
   /* 
     const handleWikiClick = (e) => {
@@ -234,6 +240,9 @@ function App() {
 
       // Now handle quotes
       getQuotes(precedingWord);
+
+      // Now handle giphys
+      getRelatedGiphys(precedingWord);
     } else {
       console.log(`no word to search for`);
     }
@@ -350,6 +359,16 @@ function App() {
     }
 
 
+  }
+
+  const getRelatedGiphys = async (word) => {
+
+    let giphyOn = true;
+    if (giphyOn) {
+      const { data: gifs } = await gf.search(word, { sort: 'relevant', lang: 'es', limit: 3, type: 'gifs' });
+      console.log(`gifs`, gifs);
+      setGiphys(gifs);
+    }
   }
 
   const getWiki = (word) => {
@@ -494,6 +513,13 @@ function App() {
           {/* <button onClick={handleUnsplashClick}>Get Related Images</button> */}
           <div className="related-images-section">
             {relatedImages ? <RelatedImages relatedImages={relatedImages} currentWord={currentWord}/> : ""}
+          </div>
+        </div>
+
+        {/* Giphys area */}
+        <div className="bc-giphys-area">
+          <div className="related-giphys-section">
+            {giphys ? <Giphys giphys={giphys} currentWord={currentWord}/> : ""}
           </div>
         </div>
 
